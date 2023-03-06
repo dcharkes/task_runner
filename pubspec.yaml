@@ -1,0 +1,14 @@
+name: task_runner
+description: A library to run tasks.
+version: 0.1.0
+repository: https://github.com/dcharkes/task_runner
+
+environment:
+  sdk: '>=2.19.3 <4.0.0'
+
+dependencies:
+  logging: ^1.1.1
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
