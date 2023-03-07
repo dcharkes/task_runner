@@ -11,7 +11,7 @@ void main() {
   test('RunProcess dart', () async {
     final temp = await Directory.systemTemp.createTemp();
     final mainDart = File.fromUri(temp.uri.resolve('main.dart'));
-    final contents = '''
+    const contents = '''
 void main(){
   print('hello world!');
 }''';

@@ -60,20 +60,20 @@ void main() {
     await runner.run(
       Task.parallel([
         Task.function(({taskRunner}) async {
-          await Future.delayed(Duration(microseconds: 1));
+          await Future<Object>.delayed(Duration(microseconds: 1));
           counter++;
-          await Future.delayed(Duration(microseconds: 1));
+          await Future<Object>.delayed(Duration(microseconds: 1));
         }),
         Task.function(({taskRunner}) async {
           for (int i = 0; i < 10; i++) {
-            await Future.delayed(Duration(microseconds: 1));
+            await Future<Object>.delayed(Duration(microseconds: 1));
             expect(counter, 1);
           }
         }),
         Task.function(({taskRunner}) async {
-          await Future.delayed(Duration(microseconds: 1));
+          await Future<Object>.delayed(Duration(microseconds: 1));
           counter++;
-          await Future.delayed(Duration(microseconds: 1));
+          await Future<Object>.delayed(Duration(microseconds: 1));
         }),
       ]),
     );

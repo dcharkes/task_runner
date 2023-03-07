@@ -11,7 +11,7 @@ void main() {
   test('Copy.single', () async {
     final temp = await Directory.systemTemp.createTemp();
     final source = File.fromUri(temp.uri.resolve('source.txt'));
-    final contents = 'contents';
+    const contents = 'contents';
     await source.writeAsString(contents);
     final target = File.fromUri(temp.uri.resolve('target.txt'));
     final task = Copy.single(source.uri, target.uri);
@@ -27,7 +27,7 @@ void main() {
     final sourceFile1 = File.fromUri(source.uri.resolve('file1.txt'));
     final sourceFile2 = File.fromUri(source.uri.resolve('file2.txt'));
     final sourceFile3 = File.fromUri(source.uri.resolve('file3.txt'));
-    final contents = 'contents';
+    const contents = 'contents';
     await sourceFile1.writeAsString(contents);
     await sourceFile2.writeAsString(contents);
     await sourceFile3.writeAsString(contents);
