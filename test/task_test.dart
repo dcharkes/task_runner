@@ -37,7 +37,7 @@ void main() {
   });
 
   test('Task.parallel', () async {
-    final runner = TaskRunner();
+    final runner = TaskRunner(maxParallelTasks: 2);
     int counter = 0;
     await runner.run(
       Task.parallel([
@@ -46,6 +46,34 @@ void main() {
         }),
         Task.function(({taskRunner}) async {
           counter++;
+        }),
+      ]),
+    );
+    expect(counter, 2);
+  });
+
+  // Has plenty of yield points to see if things are really not run in
+  // parallel.
+  test('Task.parallel not parallel', () async {
+    final runner = TaskRunner(maxParallelTasks: 1);
+    int counter = 0;
+    await runner.run(
+      Task.parallel([
+        Task.function(({taskRunner}) async {
+          await Future.delayed(Duration(microseconds: 1));
+          counter++;
+          await Future.delayed(Duration(microseconds: 1));
+        }),
+        Task.function(({taskRunner}) async {
+          for (int i = 0; i < 10; i++) {
+            await Future.delayed(Duration(microseconds: 1));
+            expect(counter, 1);
+          }
+        }),
+        Task.function(({taskRunner}) async {
+          await Future.delayed(Duration(microseconds: 1));
+          counter++;
+          await Future.delayed(Duration(microseconds: 1));
         }),
       ]),
     );

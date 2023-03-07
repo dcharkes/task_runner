@@ -14,7 +14,9 @@ abstract class Task {
   Future<void> run({TaskRunner? taskRunner});
 
   /// Runs [tasks] in parallel.
-  // TODO(dacoharkes): Add a maximum concurrency to the task runner.
+  ///
+  /// If a [TaskRunner.pool] is provided, uses that pool to limit
+  /// paralallelism.
   factory Task.parallel(Iterable<Task> tasks) => _ParallelTask(tasks);
 
   /// Runs [tasks] in sequence.
@@ -37,8 +39,18 @@ class _ParallelTask implements Task {
   _ParallelTask(this.tasks);
 
   @override
-  Future<void> run({TaskRunner? taskRunner}) =>
-      Future.wait(tasks.map((e) => e.run(taskRunner: taskRunner)));
+  Future<void> run({TaskRunner? taskRunner}) {
+    final pool = taskRunner?.pool;
+    if (pool != null) {
+      return Future.wait(tasks.map((e) async {
+        final poolResource = await pool.request();
+        final result = await e.run(taskRunner: taskRunner);
+        poolResource.release();
+        return result;
+      }));
+    }
+    return Future.wait(tasks.map((e) => e.run(taskRunner: taskRunner)));
+  }
 }
 
 class _SerialTask implements Task {

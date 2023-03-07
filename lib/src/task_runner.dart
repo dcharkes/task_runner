@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
+import 'package:pool/pool.dart';
 
 import 'task.dart';
 
@@ -19,20 +20,31 @@ import 'task.dart';
 class TaskRunner {
   final Logger logger;
   final Uri? dartExecutable;
+  final Pool pool;
 
   TaskRunner._({
     required this.logger,
     this.dartExecutable,
+    required this.pool,
   });
 
+  /// Create a TaskRunner.
+  ///
+  /// Uses [logger] if provided, otherwise creates a [Logger] with [logLevel].
+  ///
+  /// Uses [pool] for executing [Task.parallel] if provided, otherwise creates
+  /// a [Pool] with [maxParallelTasks].
   factory TaskRunner({
     Logger? logger,
-    Level? logLevel,
+    Level logLevel = defaultLevel,
     Uri? dartExecutable,
+    Pool? pool,
+    int maxParallelTasks = 1,
   }) =>
       TaskRunner._(
         logger: logger ?? _defaultLogger(logLevel),
         dartExecutable: dartExecutable,
+        pool: pool ?? Pool(maxParallelTasks),
       );
 
   static Logger _defaultLogger(Level? logLevel) {
